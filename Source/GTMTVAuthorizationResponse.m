@@ -24,12 +24,12 @@
 #import "OIDFieldMapping.h"
 #import "OIDTokenRequest.h"
 
-NSString *const GTMTVDeviceTokenGrantType = @"http://oauth.net/grant_type/device/1.0";
+NSString *const GTMTVDeviceTokenGrantType = @"urn:ietf:params:oauth:grant-type:device_code";
 
 /*! @brief The key for the @c verificationURL property in the incoming parameters and for
         @c NSSecureCoding.
  */
-static NSString *const kVerificationURLKey = @"verification_url";
+static NSString *const kVerificationURLKey = @"verification_uri";
 
 /*! @brief The key for the @c userCode property in the incoming parameters and for
         @c NSSecureCoding.
@@ -154,7 +154,7 @@ static NSString *const kRequestKey = @"request";
                                               scopes:nil
                                         refreshToken:nil
                                         codeVerifier:nil
-                                additionalParameters:nil];
+                                additionalParameters:@{@"device_code": _deviceCode}];
   return pollRequest;
 }
 

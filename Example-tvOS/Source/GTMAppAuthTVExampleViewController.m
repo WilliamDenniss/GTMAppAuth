@@ -23,18 +23,19 @@
 
 #import "GTMSessionFetcher.h"
 #import "GTMSessionFetcherService.h"
+#import "GTMTVServiceConfiguration.h"
 
 /*! @brief The OAuth client ID.
     @discussion For Google, register your client at
         https://console.developers.google.com/apis/credentials?project=_
  */
-static NSString *const kClientID = @"YOUR_CLIENT.apps.googleusercontent.com";
+static NSString *const kClientID = @"deviceflow";
 
 /*! @brief The OAuth client secret.
     @discussion For Google, register your client at
         https://console.developers.google.com/apis/credentials?project=_
  */
-static NSString *const kClientSecret = @"YOUR_CLIENT_SECRET";
+static NSString *const kClientSecret = @"secret";
 
 /*! @brief NSCoding key for the authorization property.
  */
@@ -80,8 +81,19 @@ static NSString *const kExampleAuthorizerKey = @"authorization";
     [self cancelSignIn:nil];
   }
 
+
+  NSURL *deviceAuthorizationEndpoint = [NSURL URLWithString:@"https://mitreid.org/devicecode"];
+  NSURL *tokenEndpoint = [NSURL URLWithString:@"https://mitreid.org/token"];
+
+
   // builds authentication request
-  GTMTVServiceConfiguration *configuration = [GTMTVAuthorizationService TVConfigurationForGoogle];
+  GTMTVServiceConfiguration *configuration =
+      [[GTMTVServiceConfiguration alloc] initWithAuthorizationEndpoint:deviceAuthorizationEndpoint
+                                               TVAuthorizationEndpoint:deviceAuthorizationEndpoint
+                                                         tokenEndpoint:tokenEndpoint];
+
+
+
   GTMTVAuthorizationRequest *request =
       [[GTMTVAuthorizationRequest alloc] initWithConfiguration:configuration
                                                       clientId:kClientID
@@ -143,12 +155,12 @@ static NSString *const kExampleAuthorizerKey = @"authorization";
 /*! @brief Loads the @c GTMAppAuthFetcherAuthorization from @c NSUSerDefaults.
  */
 - (void)loadState {
-  GTMAppAuthFetcherAuthorization* authorization =
-      [GTMAppAuthFetcherAuthorization authorizationFromKeychainForName:kExampleAuthorizerKey];
-  [self setAuthorization:authorization];
-  if (authorization) {
-    [self logMessage:@"Authorization restored: %@", authorization];
-  }
+//  GTMAppAuthFetcherAuthorization* authorization =
+//      [GTMAppAuthFetcherAuthorization authorizationFromKeychainForName:kExampleAuthorizerKey];
+//  [self setAuthorization:authorization];
+//  if (authorization) {
+//    [self logMessage:@"Authorization restored: %@", authorization];
+//  }
 }
 
 /*! @brief Refreshes UI, typically called after the auth state changed.
@@ -176,7 +188,7 @@ static NSString *const kExampleAuthorizerKey = @"authorization";
   fetcherService.authorizer = self.authorization;
 
   // Creates a fetcher for the API call.
-  NSURL *userinfoEndpoint = [NSURL URLWithString:@"https://www.googleapis.com/oauth2/v3/userinfo"];
+  NSURL *userinfoEndpoint = [NSURL URLWithString:@"https://mitreid.org/userinfo"];
   GTMSessionFetcher *fetcher = [fetcherService fetcherWithURL:userinfoEndpoint];
   [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {
 
