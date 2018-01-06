@@ -20,8 +20,6 @@
 
 #ifndef GTMAPPAUTH_USER_IMPORTS
 #import <AppAuth/AppAuth.h>
-#import <AppAuth/OIDDefines.h>
-#import <AppAuth/OIDURLQueryComponent.h>
 #else // GTMAPPAUTH_USER_IMPORTS
 #import "AppAuth.h"
 #import "OIDDefines.h"

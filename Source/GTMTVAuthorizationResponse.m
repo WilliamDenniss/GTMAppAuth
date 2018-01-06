@@ -21,14 +21,30 @@
 #import "GTMTVAuthorizationRequest.h"
 #ifndef GTMAPPAUTH_USER_IMPORTS
 #import <AppAuth/AppAuth.h>
-#import <AppAuth/OIDDefines.h>
-#import <AppAuth/OIDFieldMapping.h>
 #else // GTMAPPAUTH_USER_IMPORTS
 #import "AppAuth.h"
 #import "OIDDefines.h"
 #import "OIDFieldMapping.h"
 #endif // GTMAPPAUTH_USER_IMPORTS
 
+
+/*! @def OID_UNAVAILABLE_USE_INITIALIZER(designatedInitializer)
+ @brief Provides a template implementation for init-family methods which have been marked as
+ NS_UNAVILABLE. Stops the compiler from giving a warning when it's the super class'
+ designated initializer, and gives callers useful feedback telling them what the
+ new designated initializer is.
+ @remarks Takes a SEL as a parameter instead of a string so that we get compiler warnings if the
+ designated intializer's signature changes.
+ @param designatedInitializer A SEL referencing the designated initializer.
+ */
+#define OID_UNAVAILABLE_USE_INITIALIZER(designatedInitializer) { \
+NSString *reason = [NSString stringWithFormat:@"Called: %@\nDesignated Initializer:%@", \
+NSStringFromSelector(_cmd), \
+NSStringFromSelector(designatedInitializer)]; \
+@throw [NSException exceptionWithName:@"Attempt to call unavailable initializer." \
+reason:reason \
+userInfo:nil]; \
+}
 
 NSString *const GTMTVDeviceTokenGrantType = @"http://oauth.net/grant_type/device/1.0";
 
